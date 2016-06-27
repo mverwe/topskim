@@ -10,6 +10,7 @@
 
 const Float_t eleM = .000510998910;
 const Float_t muM = .1056583715;
+const float lepPtCut = 18.;
 
 void anaEMuSkimTree(TString strIn = "emuskim_0.root", const std::string outFileName = "topEmuSkim_0.root") {
 
@@ -81,7 +82,7 @@ void anaEMuSkimTree(TString strIn = "emuskim_0.root", const std::string outFileN
       for(int jlep = ilep+1; jlep<nLep;  jlep++) {
         if(lepID[ilep]==lepID[jlep]) continue;   //reject same flavor
         if(lepChg[ilep]==lepChg[jlep]) continue; //reject same sign
-
+        if(lepPt[ilep]<lepPtCut) continue;
         //do lepton isolation cut
         if(hiBin<20 && lepIso[ilep]>0.58) continue;
         else if(hiBin>=20 && hiBin<60 && lepIso[ilep]>0.45) continue;

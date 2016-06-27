@@ -77,7 +77,7 @@ int getCentBinEleId(double cent) {
 
 double calcLeptonIsolation(float lepPt, float lepEta, float lepPhi, std::vector<float> *pfPt, std::vector<float> *pfEta, std::vector<float> *pfPhi);
 
-void makeEMuSkim(const std::string outFileName = "", const std::string inFileName = "")
+void makeEMuSkim(const std::string outFileName = "", const std::string inFileName = "", bool isMC = false)
 {
   if(!strcmp(inFileName.c_str(), "")){
     std::cout << "No inputs specified. return" << std::endl;
@@ -97,7 +97,7 @@ void makeEMuSkim(const std::string outFileName = "", const std::string inFileNam
   //  Printf("Create EnergyRegression object");
   EnergyRegression energyRegression;
   //Printf("Create EnergyRegression object done. calling initreader");
-  energyRegression.initreader();
+  if(!isMC) energyRegression.initreader();
   
   //initialize electron Id variables [barrel/endcap][centBin]
   eleSigmaIEtaIEta_VetoCut[0][0] = 0.01325;
@@ -215,7 +215,7 @@ void makeEMuSkim(const std::string outFileName = "", const std::string inFileNam
     std::vector<float>         *pfEta = 0;
     std::vector<float>         *pfPhi = 0;
     
-    int trig = 0;
+    int trig = 1;
 
     //event selections
     int phfCoincFilter = 1;
@@ -334,7 +334,7 @@ void makeEMuSkim(const std::string outFileName = "", const std::string inFileNam
       pfTree_p->GetEntry(entry);
       skimAnaTree_p->GetEntry(entry);
       
-      if(!trig) continue;
+      if(!isMC && !trig) continue;
       if(!phfCoincFilter) continue;
       if(!HBHENoiseFilterResult) continue;
       if(!pcollisionEventSelection) continue;
@@ -445,7 +445,8 @@ void makeEMuSkim(const std::string outFileName = "", const std::string inFileNam
         if(isDebug) std::cout << __LINE__ << std::endl;
         float ptEle = fForestEle.elePt->at(eleIter);
         //Printf("ptEle: %f",ptEle);
-        float eleCorr = energyRegression.ElectronRegressionTMVA(fForestEle.eleSCPhi->at(eleIter),
+        float eleCorr = 1.;
+        if(!isMC) eleCorr = energyRegression.ElectronRegressionTMVA(fForestEle.eleSCPhi->at(eleIter),
                                                                 fForestEle.eleSCEta->at(eleIter),
                                                                 fForestEle.eleSigmaIEtaIEta->at(eleIter),
                                                                 fForestEle.eleSigmaIPhiIPhi->at(eleIter),

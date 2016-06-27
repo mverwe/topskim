@@ -3,6 +3,7 @@
 #include "TNamed.h"
 #include "TMath.h"
 #include "TLorentzVector.h"
+#include "TChain.h"
 
 #include "LepJetsSkimTree.h"
 #include <string>
@@ -30,7 +31,7 @@ const int   muPixelHitsCut = 0;
 
 double calcLeptonIsolation(float lepPt, float lepEta, float lepPhi, std::vector<float> *pfPt, std::vector<float> *pfEta, std::vector<float> *pfPhi);
 
-void makeMuJetsSkim(const std::string outFileName = "", const std::string inFileName = "")
+void makeMuJetsSkim(const std::string outFileName = "", const std::string inFileName = "", bool isMC = false)
 {
   if(!strcmp(inFileName.c_str(), "")){
     std::cout << "No inputs specified. return" << std::endl;
@@ -81,7 +82,7 @@ void makeMuJetsSkim(const std::string outFileName = "", const std::string inFile
   std::vector<float>         *pfEta = 0;
   std::vector<float>         *pfPhi = 0;
     
-  int trig = 0;
+  int trig = 1;
 
   //event selections
   int phfCoincFilter = 1;
@@ -89,7 +90,7 @@ void makeMuJetsSkim(const std::string outFileName = "", const std::string inFile
   int pprimaryVertexFilter = 1;
   int pcollisionEventSelection = 1;
 
-  lepTree_p->SetBranchStatus("*", 0);
+  //lepTree_p->SetBranchStatus("*", 0);
   lepTree_p->SetBranchStatus("mu*", 1);
       
   lepTree_p->SetBranchAddress("muPt", &fForestMu.muPt);
@@ -161,14 +162,14 @@ void makeMuJetsSkim(const std::string outFileName = "", const std::string inFile
     if(entry%entryDiv == 0 && nEntries >= 10000) std::cout << "Entry # " << entry << "/" << nEntries << std::endl;
     if(isDebug) std::cout << __LINE__ << std::endl;
 
+    hiTree_p->GetEntry(entry);
     lepTree_p->GetEntry(entry);
     jetTree_p->GetEntry(entry);
-    hiTree_p->GetEntry(entry);
     hltTree_p->GetEntry(entry);
     pfTree_p->GetEntry(entry);
     skimAnaTree_p->GetEntry(entry);
-      
-    if(!trig) continue;
+    
+    if(!isMC && !trig) continue;
     if(!phfCoincFilter) continue;
     if(!HBHENoiseFilterResult) continue;
     if(!pcollisionEventSelection) continue;
