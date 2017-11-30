@@ -16,7 +16,9 @@ const Float_t muM = .1056583715;
 UInt_t run_, lumi_;
 ULong64_t evt_;
 Int_t hiBin_;
+Float_t hiHF_;
 Float_t vz_;
+Float_t rho_;
 
 Int_t nLep_;
 Int_t lepID_[nLep];
@@ -25,6 +27,7 @@ Float_t lepPhi_[nLep];
 Float_t lepEta_[nLep];
 Int_t lepChg_[nLep];
 Float_t lepIso_[nLep];
+std::vector<std::vector<float>> lepIsoCones_;
 
 const Int_t nMaxJets = 500;
 Int_t nJt_;
@@ -33,13 +36,16 @@ Float_t jtPhi_[nMaxJets];
 Float_t jtEta_[nMaxJets];
 Float_t jtM_[nMaxJets];
 Float_t discr_csvV1_[nMaxJets];
+int     refparton_flavorForB_[nMaxJets];
 
 // List of branches
 TBranch        *b_run;   //!
 TBranch        *b_evt;   //!
 TBranch        *b_lumi;   //!
 TBranch        *b_hiBin;   //!
+TBranch        *b_hiHF;   //!
 TBranch        *b_vz;   //!
+TBranch        *b_rho;   //!
 TBranch        *b_nLep;   //!
 TBranch        *b_lepID;   //!
 TBranch        *b_lepPt;   //!
@@ -47,12 +53,14 @@ TBranch        *b_lepPhi;   //!
 TBranch        *b_lepEta;   //!
 TBranch        *b_lepChg;   //!
 TBranch        *b_lepIso; //!
+TBranch        *b_lepIsoCones; //!
 TBranch        *b_nJt;   //!
 TBranch        *b_jtPt;   //!
 TBranch        *b_jtPhi;   //!
 TBranch        *b_jtEta;   //!
 TBranch        *b_jtM;   //!
 TBranch        *b_discr_csvV1;//!
+TBranch        *b_refparton_flavorForB; //!
 
 void BookTree()
 {
@@ -65,7 +73,9 @@ void BookTree()
   skimTree_p->Branch("evt", &evt_, "evt/l");
   skimTree_p->Branch("lumi", &lumi_, "lumi/i");
   skimTree_p->Branch("hiBin", &hiBin_, "hiBin/I");
+  skimTree_p->Branch("hiHF", &hiHF_, "hiHF/F");
   skimTree_p->Branch("vz", &vz_, "vz/F");
+  skimTree_p->Branch("rho", &rho_, "rho/F");
 
   skimTree_p->Branch("nLep", &nLep_, "nLep/I");
   skimTree_p->Branch("lepID", lepID_, Form("lepID[%d]/I",nLep));
@@ -73,7 +83,8 @@ void BookTree()
   skimTree_p->Branch("lepPhi", lepPhi_, Form("lepPhi[%d]/F", nLep));
   skimTree_p->Branch("lepEta", lepEta_, Form("lepEta[%d]/F", nLep));
   skimTree_p->Branch("lepChg", lepChg_, Form("lepChg[%d]/I", nLep));
-  skimTree_p->Branch("lepIso", lepIso_, Form("lepIso[%d]/F", nLep)); 
+  skimTree_p->Branch("lepIso", lepIso_, Form("lepIso[%d]/F", nLep));
+  skimTree_p->Branch("lepIsoCones", &lepIsoCones_); 
  
   skimTree_p->Branch("nJt", &nJt_, "nJt/I");
   skimTree_p->Branch("jtPt", jtPt_, "jtPt[nJt]/F");
@@ -81,7 +92,8 @@ void BookTree()
   skimTree_p->Branch("jtEta", jtEta_, "jtEta[nJt]/F");
   skimTree_p->Branch("jtM", jtM_, "jtM[nJt]/F");
   skimTree_p->Branch("discr_csvV1", discr_csvV1_, "discr_csvV1[nJt]/F");
-
+  skimTree_p->Branch("refparton_flavorForB", refparton_flavorForB_, "refparton_flavorForB[nJt]/I");
+  
   return;
 }
 
