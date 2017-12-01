@@ -82,6 +82,17 @@ void anaIsoEMuSkimTree(TString strIn = "emuskim_0.root", const std::string outFi
     vz_    = vz;
 
     nLep_ = 0;
+
+    for(int ilep = 0; ilep<nLepMax; ++ilep) {
+      lepID_[ilep] = -999.; 
+      lepPt_[ilep] = -999.; 
+      lepEta_[ilep] = -999.;
+      lepPhi_[ilep] = -999.;
+      lepChg_[ilep] = -999.;
+      lepIso_[ilep] = -999.;
+      lepFromB_[ilep] = -999.;
+    }
+    
     lepIsoCones_.clear();
         
     for(int ilep = 0; ilep<nLep;  ilep++) {

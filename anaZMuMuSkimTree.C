@@ -76,7 +76,30 @@ void anaZMuMuSkimTree(TString strIn = "emuskim_0.root", const std::string outFil
     hiBin_ = hiBin;
     vz_    = vz;
 
+    for(int ilep = 0; ilep<nDilepMax; ++ilep) {
+      dilepPt_[ilep] = -999.;
+      dilepEta_[ilep] = -999.;
+      dilepPhi_[ilep] = -999.;
+      dilepM_[ilep] = -999.;
+
+      dilepDeltaPhi_[ilep] = -999.;
+        
+      lep1Pt_[ilep] = -999.; 
+      lep2Pt_[ilep] = -999.; 
+      lep1Eta_[ilep] = -999.;
+      lep2Eta_[ilep] = -999.;
+      lep1Phi_[ilep] = -999.;
+      lep2Phi_[ilep] = -999.;
+      lep1Iso_[ilep] = -999.;
+      lep2Iso_[ilep] = -999.;
+
+      lep1IsoCones_.clear();
+      lep2IsoCones_.clear();
+    }
+    
     if(nLep<2) continue;
+
+    dilepPairs = 0;
     
     std::vector<TLorentzVector> dileptons;
     for(int ilep = 0; ilep<nLep;  ilep++) {
